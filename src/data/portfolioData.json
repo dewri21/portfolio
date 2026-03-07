@@ -1,0 +1,203 @@
+{
+  "identity": {
+    "name": "Nayan Jeet Dewri",
+    "role": "Automation Test Lead",
+    "headline": "I build high-confidence automation systems that keep data products stable at release speed.",
+    "summary": "Automation leader with 6+ years of experience designing resilient Python QA systems across SQL engines, APIs, and data-heavy UI workflows. Deep execution in Playwright, Pytest, BDD, SQL validation, and Kafka-backed streaming checks."
+  },
+  "about": {
+    "narrative": "I turn flaky, manual-heavy QA into deterministic systems teams can trust. My approach combines robust test architecture, domain-aware validation logic, and close collaboration with product and engineering to cut regression load while accelerating confident releases.",
+    "focusAreas": [
+      "Python-driven test architecture for SQL and API platforms",
+      "Kinetica SQL correctness validation across edge-case datasets",
+      "UI workflow automation with Playwright for production confidence",
+      "Streaming and ingestion validation with Apache Kafka and Confluent Kafka",
+      "Mentoring engineers and scaling test ownership across teams"
+    ]
+  },
+  "metrics": [
+    {
+      "id": "years",
+      "label": "Years in Automation",
+      "value": 6,
+      "suffix": "+",
+      "description": "Hands-on automation engineering across SQL, API, UI, and data streams.",
+      "tags": ["Automation", "Leadership"]
+    },
+    {
+      "id": "regression",
+      "label": "Regression Effort Reduced",
+      "value": 50,
+      "suffix": "%",
+      "description": "Reduced manual regression effort by approximately 40-50% through scaled frameworks.",
+      "tags": ["Automation", "Process"]
+    },
+    {
+      "id": "feedback",
+      "label": "Faster Feedback Cycles",
+      "value": 30,
+      "suffix": "%",
+      "description": "Shortened feedback loops by aligning test strategy with product and engineering teams.",
+      "tags": ["Leadership", "Process"]
+    },
+    {
+      "id": "coverage",
+      "label": "Critical API Coverage",
+      "value": 80,
+      "suffix": "%",
+      "description": "Drove automated test coverage for critical endpoints to approximately 80%.",
+      "tags": ["API Testing", "BDD"]
+    }
+  ],
+  "experience": [
+    {
+      "id": "team-lead-automation",
+      "role": "Team Lead - Automation",
+      "company": "Apt Software Avenues Pvt. Ltd.",
+      "location": "Kolkata, West Bengal",
+      "start": "2026-01",
+      "end": "Present",
+      "summary": "Leading end-to-end automation strategy for Kinetica SQL engine, APIs, and Workbench UI.",
+      "achievements": [
+        "Built Python, Pytest, BDD, and Playwright frameworks that cut manual regression by approximately 40-50%.",
+        "Mentored 2-3 engineers on automation design, debugging, and review quality to reduce rework time.",
+        "Aligned testing with product and dev teams through JIRA-driven tracking and tighter specification reviews, improving feedback cycles by approximately 30%."
+      ],
+      "tags": ["Leadership", "Python", "Pytest", "Playwright", "BDD", "SQL Testing", "UI Automation", "API Testing"]
+    },
+    {
+      "id": "senior-software-engineer",
+      "role": "Senior Software Engineer",
+      "company": "Apt Software Avenues Pvt. Ltd.",
+      "location": "Kolkata, West Bengal",
+      "start": "2024-04",
+      "end": "2025-12",
+      "summary": "Expanded SQL, UI, and AI-query validation coverage for Kinetica features and workflows.",
+      "achievements": [
+        "Designed comprehensive SQL validation for ANTI, SEMI, and ASOF joins, plus built-ins such as PREDICT and OUTLIERS.",
+        "Implemented SQL-GPT validation to verify prompt-to-query accuracy and result consistency.",
+        "Built robust Playwright coverage for user-facing Workbench flows to raise release confidence.",
+        "Automated ingestion and export validation using Apache Kafka, Confluent Kafka, and Azure Blob Storage."
+      ],
+      "tags": ["SQL Testing", "Playwright", "Data Validation", "Kafka", "Automation", "AI Validation", "UI Automation"]
+    },
+    {
+      "id": "software-engineer",
+      "role": "Software Engineer",
+      "company": "Apt Software Avenues Pvt. Ltd.",
+      "location": "Kolkata, West Bengal",
+      "start": "2021-04",
+      "end": "2024-03",
+      "summary": "Scaled REST API automation and BDD test specifications for maintainable platform quality.",
+      "achievements": [
+        "Implemented Pytest + Pytest-BDD suites for Kinetica REST APIs with clear and maintainable specs.",
+        "Increased automated test coverage of critical API endpoints to approximately 80%, reducing manual validation load."
+      ],
+      "tags": ["API Testing", "BDD", "Pytest", "Python", "Automation"]
+    },
+    {
+      "id": "junior-software-engineer",
+      "role": "Junior Software Engineer",
+      "company": "Apt Software Avenues Pvt. Ltd.",
+      "location": "Kolkata, West Bengal",
+      "start": "2019-12",
+      "end": "2021-03",
+      "summary": "Built automation utilities and migration validation workflows across data platforms.",
+      "achievements": [
+        "Developed Python and Java tools for multi-sheet Excel comparison, data processing, and C-code generation.",
+        "Contributed testing and visualization tooling with Pytest, matplotlib, and Qt/QML.",
+        "Verified SQL-based migration integrity using HiveQL, Spark, and Airflow.",
+        "Contributed to development and maintenance of the iOS app PFactor."
+      ],
+      "tags": ["Python", "Java", "Data Validation", "Migration", "HiveQL", "Spark", "Airflow", "Automation"]
+    }
+  ],
+  "projects": [
+    {
+      "id": "sql-engine-validation",
+      "name": "Kinetica SQL Engine Validation",
+      "period": "2024-2025",
+      "description": "Created deep SQL test coverage for Kinetica-native features including ANTI, SEMI, ASOF joins, and ML-focused built-ins.",
+      "impact": "Improved edge-case correctness and reduced production query risk in large datasets.",
+      "stack": ["Python", "Pytest", "SQL (Kinetica)"],
+      "tags": ["SQL Testing", "Data Validation", "Automation"]
+    },
+    {
+      "id": "sql-gpt-validation",
+      "name": "SQL-GPT Query Validation",
+      "period": "2024-2025",
+      "description": "Implemented validation framework for AI-assisted prompt-to-query generation and result consistency checks.",
+      "impact": "Raised trust in AI-generated SQL workflows by validating correctness before release.",
+      "stack": ["Python", "Pytest", "SQL"],
+      "tags": ["AI Validation", "SQL Testing", "Automation"]
+    },
+    {
+      "id": "workbench-ui-automation",
+      "name": "Workbench UI Automation",
+      "period": "2024-2026",
+      "description": "Built a robust Playwright suite covering critical user-facing workbench workflows.",
+      "impact": "Increased release confidence and reduced UI regression risk.",
+      "stack": ["Playwright", "TypeScript", "UI Automation"],
+      "tags": ["UI Automation", "Playwright", "Automation"]
+    },
+    {
+      "id": "kafka-data-validation",
+      "name": "Kafka and Ingestion Data Validation",
+      "period": "2024-2025",
+      "description": "Automated validation for ingestion/export pipelines using Apache Kafka, Confluent Kafka, and Azure Blob storage.",
+      "impact": "Improved data transfer reliability and surfaced stream defects earlier.",
+      "stack": ["Python", "Apache Kafka", "Confluent Kafka", "Azure Blob"],
+      "tags": ["Kafka", "Data Validation", "Automation"]
+    },
+    {
+      "id": "api-bdd-coverage",
+      "name": "REST API BDD Coverage Expansion",
+      "period": "2021-2024",
+      "description": "Expanded API test architecture with Pytest-BDD for maintainable behavior-level specs.",
+      "impact": "Pushed critical endpoint automation to approximately 80% coverage.",
+      "stack": ["Python", "Pytest", "Pytest-BDD", "REST API"],
+      "tags": ["API Testing", "BDD", "Automation"]
+    },
+    {
+      "id": "migration-testing",
+      "name": "Migration and Data Integrity Automation",
+      "period": "2019-2021",
+      "description": "Validated SQL migration integrity using HiveQL, Spark, and Airflow-backed workflows.",
+      "impact": "Reduced migration risk for internal platform projects.",
+      "stack": ["HiveQL", "Spark", "Airflow", "Python"],
+      "tags": ["Migration", "Data Validation", "Automation"]
+    }
+  ],
+  "skills": [
+    {
+      "group": "Languages",
+      "items": ["Python", "SQL (Kinetica)"]
+    },
+    {
+      "group": "Test and QA",
+      "items": ["Pytest", "Pytest-BDD", "Playwright", "Behavior-Driven Development (BDD)", "API and UI automation"]
+    },
+    {
+      "group": "Data and Streaming",
+      "items": ["Apache Kafka", "Confluent Kafka", "SQL engine validation"]
+    },
+    {
+      "group": "Tools and Platforms",
+      "items": ["Git", "Docker", "JIRA"]
+    }
+  ],
+  "education": [
+    {
+      "institution": "Central Institute of Technology",
+      "degree": "Bachelor of Technology in Information Technology",
+      "period": "Aug 2015 - Jul 2019",
+      "location": "Kokrajhar, Assam"
+    }
+  ],
+  "contact": {
+    "email": "njdewri@gmail.com",
+    "linkedin": "https://linkedin.com/in/dewri",
+    "location": "Kolkata, West Bengal, India",
+    "availability": "Open to Automation QA leadership and high-scale data platform quality engineering roles."
+  }
+}
