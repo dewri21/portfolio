@@ -131,7 +131,6 @@ a {
   top: -100px;
   left: -50px;
   animation: floatOrbA 9s ease-in-out infinite;
-  will-change: transform;
   transform: translate3d(0, 0, 0);
 }
 
@@ -151,7 +150,6 @@ html.transition-active .orb {
   right: -80px;
   top: 30%;
   animation: floatOrbB 11s ease-in-out infinite;
-  will-change: transform;
 }
 
 :root[data-theme='dark'] .orb-b {
@@ -165,7 +163,6 @@ html.transition-active .orb {
   left: 20%;
   bottom: -150px;
   animation: floatOrbC 13s ease-in-out infinite;
-  will-change: transform;
 }
 
 :root[data-theme='dark'] .orb-c {
@@ -198,7 +195,6 @@ html.transition-active .orb {
   background: var(--glass);
   box-shadow: var(--glass-shadow), var(--glass-highlight);
   /* Macro-level hardware acceleration */
-  will-change: transform;
   contain: layout style; /* Isolate layout calculation, but allow pre-painting off-screen to prevent scroll lag! */
 }
 
@@ -449,7 +445,6 @@ html.transition-active {
   border: 1px solid var(--glass-border);
   background: var(--glass-strong);
   box-shadow: var(--panel-shadow), var(--glass-highlight);
-  transform: translateZ(0); /* GPU layer promotion */
 }
 
 .dropdown-content,
@@ -1222,6 +1217,46 @@ main {
 ::view-transition-group(theme-icon) {
   animation-duration: 0.65s;
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 
+  High-Octane Safari GPU Refinements
+  Using @supports hack to strictly target WebKit (Safari/iOS)
+*/
+@supports (-webkit-touch-callout: none) {
+  /* Disable expensive background animations */
+  .orb {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  /* Reduce sampling cost for frosted glass */
+  .top-bar {
+    backdrop-filter: blur(6px) saturate(110%) !important;
+    -webkit-backdrop-filter: blur(6px) saturate(110%) !important;
+  }
+
+  /* Simplify background gradients: Replace layered radials with static linear fallback */
+  .app-shell::after {
+    background-image: linear-gradient(135deg, var(--bg-start), var(--bg-end)) !important;
+  }
+
+  /* Reduce shadow complexity for better compositor performance */
+  .hero,
+  .content-section,
+  .top-bar,
+  .metric-card,
+  .skill-card,
+  .project-card {
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15), var(--glass-highlight) !important;
+  }
+
+  /* Disable VT animations to prevent layout recomposition stalls */
+  ::view-transition-group(root),
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
 }
 
 
