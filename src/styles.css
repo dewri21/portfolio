@@ -233,7 +233,9 @@ html.transition-active *::before,
 html.transition-active *::after {
   animation-play-state: paused !important;
   will-change: auto !important;
-  transition: none !important; /* Zero-Repaint optimization: disable all transitions during theme toggle */
+  transition: none !important;
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
 }
 
 /* 
@@ -245,7 +247,10 @@ html.transition-active .skill-card,
 html.transition-active .experience-card,
 html.transition-active .project-card,
 html.transition-active .education-card,
-html.transition-active .contact-card {
+html.transition-active .contact-card,
+html.transition-active .timeline-content,
+html.transition-active .filter-insights,
+html.transition-active .focus-list li {
   background: var(--bg) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
@@ -442,7 +447,7 @@ html.transition-active {
   font-size: 0.79rem;
   font-weight: 600;
   padding: 0.34rem 0.64rem;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease;
 }
 
 .header-actions nav a:hover {
@@ -450,6 +455,7 @@ html.transition-active {
   transform: translateY(-2px);
   background: var(--glass);
   box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2), inset 0 2px 2px rgba(255, 255, 255, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 .menu-toggle {
@@ -505,7 +511,7 @@ html.transition-active {
   border-radius: 999px;
   padding: 0.52rem 0.76rem;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.18s ease;
+  transition: transform 0.26s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .theme-toggle.icon-only {
@@ -534,7 +540,7 @@ html.transition-active {
 
 .sun-group, 
 .moon-group {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1);
   transform-origin: center;
 }
 
@@ -545,13 +551,15 @@ html.transition-active {
 }
 
 .moon-outline {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .theme-toggle:hover {
   transform: translateY(-2px);
   background: var(--glass);
   box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2), inset 0 2px 2px rgba(255, 255, 255, 0.4);
+  /* Hover-specific transitions */
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.18s ease;
 }
 
 .theme-toggle[data-mode="dark"]:hover {
@@ -640,7 +648,7 @@ main {
   text-decoration: none;
   font-size: 0.88rem;
   font-weight: 700;
-  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .primary-cta {
@@ -656,6 +664,8 @@ main {
   transform: translateY(-3px);
   background: var(--glass);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25), inset 0 2px 3px rgba(255, 255, 255, 0.5);
+  /* Transitions only on interaction to prevent theme-toggle stalls */
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.2s ease, box-shadow 0.25s ease;
 }
 
 .metric-grid {
@@ -681,8 +691,7 @@ main {
   border: 1px solid var(--glass-border);
   background: var(--glass-strong);
   box-shadow: var(--panel-shadow), var(--glass-highlight);
-  /* Optimized: Removed background/border transition from the base state to prevent mass-repaint on theme switch */
-  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .metric-card:hover,
@@ -691,6 +700,8 @@ main {
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), inset 0 2px 5px rgba(255, 255, 255, 0.6);
   border-color: rgba(255, 255, 255, 0.6);
   background: var(--glass);
+  /* Interaction transitions only */
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
 }
 
 .metric-card {
@@ -779,7 +790,7 @@ main {
   border-radius: 999px;
   font-size: 0.8rem;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease;
 }
 
 .tag-button.active {
@@ -789,6 +800,7 @@ main {
 .tag-button:hover {
   transform: translateY(-1px);
   box-shadow: 0 12px 24px rgba(12, 20, 35, 0.14);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .query-input-shell input {
@@ -978,7 +990,7 @@ main {
   opacity: 0;
   transform: translateY(1rem) translateZ(0);
   pointer-events: none;
-  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease, background 0.2s ease;
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   view-transition-name: back-to-top;
 }
 
@@ -989,8 +1001,10 @@ main {
 }
 
 .back-to-top:hover {
-  transform: translateY(-3px) translateZ(0);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25), inset 0 2px 3px rgba(255, 255, 255, 0.5);
+  background: color-mix(in oklab, var(--accent) 85%, #ffffff 15%);
+  transform: scale(1.08) translateY(-2px);
+  box-shadow: 0 15px 30px color-mix(in oklab, var(--accent) 50%, transparent 50%);
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
 
@@ -1104,6 +1118,13 @@ main {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     box-shadow: none;
+    transition: transform 0.18s ease;
+  }
+
+  .header-actions nav a:hover {
+    background: rgba(128, 128, 128, 0.12);
+    box-shadow: none;
+    transform: none;
     transition: background 0.18s ease, border-color 0.18s ease;
   }
 
