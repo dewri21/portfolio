@@ -233,6 +233,7 @@ html.transition-active *::before,
 html.transition-active *::after {
   animation-play-state: paused !important;
   will-change: auto !important;
+  transition: none !important; /* Zero-Repaint optimization: disable all transitions during theme toggle */
 }
 
 /* 
@@ -365,7 +366,8 @@ html.transition-active {
   align-items: center;
   gap: 0 0.85rem;
   padding: 1.1rem 0.95rem;
-  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, border-color 0.3s ease;
+  /* Optimized: Removed background/border transition as they are handled by View Transitions */
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .header-controls {
@@ -679,7 +681,8 @@ main {
   border: 1px solid var(--glass-border);
   background: var(--glass-strong);
   box-shadow: var(--panel-shadow), var(--glass-highlight);
-  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.3s ease, background 0.3s ease;
+  /* Optimized: Removed background/border transition from the base state to prevent mass-repaint on theme switch */
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .metric-card:hover,
