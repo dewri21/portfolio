@@ -194,8 +194,10 @@ html.transition-active .orb {
   border: 1px solid var(--glass-border);
   background: var(--glass);
   box-shadow: var(--glass-shadow), var(--glass-highlight);
-  /* Macro-level hardware acceleration */
-  contain: layout style; /* Isolate layout calculation, but allow pre-painting off-screen to prevent scroll lag! */
+  /* High-Performance Engine: Deep browser optimizations */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 800px;
+  contain: layout paint;
 }
 
 /* 
@@ -686,13 +688,6 @@ main {
   transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.2s ease, box-shadow 0.25s ease;
 }
 
-.metric-grid {
-  margin-top: 1.18rem;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.72rem;
-}
-
 .metric-card,
 .skill-card,
 .project-card,
@@ -713,7 +708,12 @@ main {
 }
 
 .metric-card:hover,
-.project-card:hover {
+.project-card:hover,
+.skill-card:hover,
+.experience-card:hover,
+.education-card:hover,
+.contact-card:hover {
+  will-change: transform;
   transform: translateY(-4px) scale(1.01);
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), inset 0 2px 5px rgba(255, 255, 255, 0.6);
   border-color: rgba(255, 255, 255, 0.6);
