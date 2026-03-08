@@ -2,6 +2,7 @@
 
 :root {
   color-scheme: light;
+  --bg: #ffffff;
   --bg-start: #f2f5fa;
   --bg-end: #dbe3ef;
   --ink: #111b2b;
@@ -18,6 +19,7 @@
 
 :root[data-theme='dark'] {
   color-scheme: dark;
+  --bg: #0a0a0a;
   --bg-start: #0a0a0a;
   --bg-end: #111111;
   --ink: #f4f4f5;
@@ -219,6 +221,15 @@ html::view-transition-new(root) {
   /* During the snapshot, ensure the base canvas doesn't blur against itself */
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
+}
+
+::view-transition-group(root),
+::view-transition-group(top-bar),
+::view-transition-group(back-to-top),
+::view-transition-image-pair(root),
+::view-transition-old(root),
+::view-transition-new(root) {
+  mix-blend-mode: normal !important; /* Force perfectly opaque snapshots */
 }
 
 /* 
