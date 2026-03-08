@@ -4,9 +4,9 @@
   color-scheme: light;
   --bg-start: #f2f5fa;
   --bg-end: #dbe3ef;
-  --ink: #1a2433;
-  --muted: #5b6d86;
-  --accent: #4a89d8;
+  --ink: #111b2b;
+  --muted: #4a5c75;
+  --accent: #cc5500; /* Darker, vivid orange for Light Mode */
   --glass: rgba(255, 255, 255, 0.08);
   --glass-strong: rgba(255, 255, 255, 0.15);
   --glass-border: rgba(255, 255, 255, 0.45);
@@ -20,9 +20,9 @@
   color-scheme: dark;
   --bg-start: #0a0a0a;
   --bg-end: #111111;
-  --ink: #e4e4e7;
-  --muted: #a1a1aa;
-  --accent: #a0c4f1;
+  --ink: #f4f4f5;
+  --muted: #b0b0b8;
+  --accent: #ff7b24; /* Darker, rich orange for Dark Mode */
   --glass: rgba(12, 12, 16, 0.25);
   --glass-strong: rgba(20, 20, 26, 0.35);
   --glass-border: rgba(255, 255, 255, 0.1);
@@ -45,12 +45,12 @@ body {
   min-height: 100vh;
   font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
   color: var(--ink);
-  background-color: var(--bg-start);
+  background-color: #ffffff;
   background-image: 
-    radial-gradient(circle at 15% 10%, rgba(255, 182, 193, 0.45) 0%, transparent 45%),
-    radial-gradient(circle at 85% 15%, rgba(135, 206, 250, 0.4) 0%, transparent 50%),
-    radial-gradient(circle at 50% 120%, rgba(221, 160, 221, 0.35) 0%, transparent 55%),
-    linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+    radial-gradient(circle at 15% 10%, rgba(255, 177, 153, 0.05) 0%, transparent 45%),
+    radial-gradient(circle at 85% 15%, rgba(255, 106, 136, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 50% 120%, rgba(246, 211, 101, 0.04) 0%, transparent 55%),
+    linear-gradient(135deg, #ffffff 0%, #fcfcfc 100%);
   background-attachment: fixed;
 }
 
@@ -68,12 +68,12 @@ body::before {
 }
 
 :root[data-theme='dark'] body {
-  background-color: #050505;
+  background-color: #000000;
   background-image: 
-    radial-gradient(circle at 10% 0%, rgba(58, 28, 113, 0.4) 0%, transparent 50%),
-    radial-gradient(circle at 90% 10%, rgba(215, 109, 119, 0.25) 0%, transparent 45%),
-    radial-gradient(circle at 50% 100%, rgba(255, 175, 123, 0.2) 0%, transparent 55%),
-    linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+    radial-gradient(circle at 10% 0%, rgba(255, 0, 85, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 90% 10%, rgba(255, 75, 31, 0.03) 0%, transparent 45%),
+    radial-gradient(circle at 50% 100%, rgba(138, 35, 135, 0.06) 0%, transparent 55%),
+    linear-gradient(135deg, #000000 0%, #020202 50%, #000000 100%);
   background-attachment: fixed;
 }
 
@@ -119,37 +119,37 @@ a {
 .orb-a {
   width: clamp(300px, 45vw, 600px);
   height: clamp(300px, 45vw, 600px);
-  background: radial-gradient(circle, rgba(135, 206, 250, 0.7), transparent 70%);
+  background: radial-gradient(circle, rgba(255, 177, 153, 0.08), transparent 70%);
   top: -100px;
   left: -50px;
 }
 
 :root[data-theme='dark'] .orb-a {
-  background: radial-gradient(circle, rgba(65, 105, 225, 0.8), transparent 70%);
+  background: radial-gradient(circle, rgba(255, 75, 31, 0.1), transparent 70%);
 }
 
 .orb-b {
   width: clamp(250px, 40vw, 550px);
   height: clamp(250px, 40vw, 550px);
-  background: radial-gradient(circle, rgba(238, 130, 238, 0.6), transparent 70%);
+  background: radial-gradient(circle, rgba(255, 106, 136, 0.06), transparent 70%);
   right: -80px;
   top: 30%;
 }
 
 :root[data-theme='dark'] .orb-b {
-  background: radial-gradient(circle, rgba(218, 112, 214, 0.7), transparent 70%);
+  background: radial-gradient(circle, rgba(255, 0, 85, 0.08), transparent 70%);
 }
 
 .orb-c {
   width: clamp(350px, 50vw, 750px);
   height: clamp(350px, 50vw, 750px);
-  background: radial-gradient(circle, rgba(152, 251, 152, 0.5), transparent 70%);
+  background: radial-gradient(circle, rgba(246, 211, 101, 0.05), transparent 70%);
   left: 20%;
   bottom: -150px;
 }
 
 :root[data-theme='dark'] .orb-c {
-  background: radial-gradient(circle, rgba(255, 140, 0, 0.6), transparent 70%);
+  background: radial-gradient(circle, rgba(138, 35, 135, 0.07), transparent 70%);
 }
 
 .top-bar,
@@ -175,8 +175,8 @@ a {
   inset: 1px;
   border-radius: inherit;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.02) 40%);
-  opacity: 0.55;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.05) 30%, transparent 100%);
+  opacity: 0.7;
 }
 
 :root[data-theme='dark'] .top-bar::before,
@@ -204,7 +204,7 @@ a {
   font-family: 'Sora', 'Segoe UI', sans-serif;
   font-size: 0.92rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   white-space: nowrap;
   line-height: 1;
@@ -260,8 +260,9 @@ a {
 
 .header-actions nav a:hover {
   color: var(--ink);
-  transform: translateY(-1px);
-  box-shadow: 0 14px 28px rgba(12, 20, 35, 0.16);
+  transform: translateY(-2px);
+  background: var(--glass);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2), inset 0 2px 2px rgba(255, 255, 255, 0.4);
 }
 
 .menu-toggle {
@@ -311,8 +312,9 @@ a {
 }
 
 .theme-toggle:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 14px 28px rgba(12, 20, 35, 0.17);
+  transform: translateY(-2px) rotate(2deg);
+  background: var(--glass);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2), inset 0 2px 2px rgba(255, 255, 255, 0.4);
 }
 
 main {
@@ -326,14 +328,15 @@ main {
 
 .hero,
 .content-section {
-  padding: clamp(1.1rem, 2.5vw, 2.25rem);
+  padding: clamp(2rem, 4vw, 3.5rem);
 }
 
 .hero h1 {
   margin: 0.2rem 0 0;
   font-family: 'Sora', 'Segoe UI', sans-serif;
-  font-size: clamp(1.4rem, 2.9vw, 2.6rem);
-  letter-spacing: -0.02em;
+  font-size: clamp(1.6rem, 3.2vw, 3rem);
+  letter-spacing: -0.01em;
+  font-weight: 700;
 }
 
 .hero h2 {
@@ -344,9 +347,10 @@ main {
 }
 
 .hero-summary {
-  margin: 0.95rem 0 0;
+  margin: 1.25rem 0 0;
   max-width: 64ch;
-  line-height: 1.62;
+  line-height: 1.68;
+  font-size: 1.05rem;
   color: var(--muted);
 }
 
@@ -387,7 +391,7 @@ main {
   text-decoration: none;
   font-size: 0.88rem;
   font-weight: 700;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .primary-cta {
@@ -400,8 +404,9 @@ main {
 
 .primary-cta:hover,
 .secondary-cta:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 14px 28px rgba(12, 20, 35, 0.17);
+  transform: translateY(-3px);
+  background: var(--glass);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25), inset 0 2px 3px rgba(255, 255, 255, 0.5);
 }
 
 .metric-grid {
@@ -429,6 +434,15 @@ main {
   backdrop-filter: blur(18px) saturate(145%);
   -webkit-backdrop-filter: blur(18px) saturate(145%);
   box-shadow: var(--panel-shadow), var(--glass-highlight);
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.metric-card:hover,
+.project-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), inset 0 2px 5px rgba(255, 255, 255, 0.6);
+  border-color: rgba(255, 255, 255, 0.6);
+  background: var(--glass);
 }
 
 .metric-card {
