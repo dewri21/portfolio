@@ -130,7 +130,6 @@ a {
   left: -50px;
   animation: floatOrbA 9s ease-in-out infinite;
   will-change: transform;
-  transform: translate3d(0, 0, 0); /* Force GPU layer in Safari */
 }
 
 :root[data-theme='dark'] .orb-a {
@@ -145,7 +144,6 @@ a {
   top: 30%;
   animation: floatOrbB 11s ease-in-out infinite;
   will-change: transform;
-  transform: translate3d(0, 0, 0); /* Force GPU layer in Safari */
 }
 
 :root[data-theme='dark'] .orb-b {
@@ -160,7 +158,6 @@ a {
   bottom: -150px;
   animation: floatOrbC 13s ease-in-out infinite;
   will-change: transform;
-  transform: translate3d(0, 0, 0); /* Force GPU layer in Safari */
 }
 
 :root[data-theme='dark'] .orb-c {
@@ -211,7 +208,6 @@ a {
   -webkit-backdrop-filter: blur(20px) saturate(140%);
   box-shadow: 0 0 50px rgba(15, 25, 42, 0.15), 0 0 20px rgba(15, 25, 42, 0.08), var(--glass-highlight);
   view-transition-name: top-bar;
-  isolation: isolate; /* Create separate compositor stack */
 }
 
 /* Core View Transition API properties */
@@ -266,16 +262,14 @@ html.transition-active .focus-list li {
 html.transition-active .top-bar {
   opacity: 1 !important;
   border-color: var(--glass-border) !important;
-  contain: strict !important; /* LOCK the compositor: no layout/style recalc during ripple */
 }
 
 /* Ensure the floating button doesn't drag down performance during the root ripple */
 html.transition-active .back-to-top {
   box-shadow: none !important;
+  transform: none !important;
   opacity: 0.5 !important;
-  transform: translate3d(0, 0, 0) !important;
   will-change: auto !important;
-  contain: strict !important; /* LOCK fixed layers */
 }
 
 /* 
@@ -287,14 +281,12 @@ html.transition-active .back-to-top {
 ::view-transition-old(back-to-top) {
   animation: fade-out 0.1s ease-out both;
   mix-blend-mode: normal !important;
-  will-change: opacity, transform; /* GPU early promotion hint */
 }
 
 ::view-transition-new(top-bar),
 ::view-transition-new(back-to-top) {
   animation: fade-in 0.1s 0.1s ease-in both;
   mix-blend-mode: normal !important;
-  will-change: opacity, transform; /* GPU early promotion hint */
 }
 
 @keyframes fade-out {
@@ -700,7 +692,6 @@ main {
   background: var(--glass-strong);
   box-shadow: var(--panel-shadow), var(--glass-highlight);
   transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-  transform: translateZ(0); /* Force GPU layer */
 }
 
 .metric-card:hover,
