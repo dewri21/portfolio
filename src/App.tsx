@@ -70,9 +70,6 @@ export default function App(): JSX.Element {
     return () => document.removeEventListener('click', onClickOutside, true);
   }, [mobileMenuOpen]);
 
-  // No scroll listeners remain for absolute performance.
-
-
   // Use IntersectionObserver to detect strictly the "back to top" threshold
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -88,6 +85,24 @@ export default function App(): JSX.Element {
     }
 
     return () => observer.disconnect();
+  }, []);
+
+  // Performance: Detect scrolling state to pause expensive background animations
+  useEffect(() => {
+    let scrollTimeout: number;
+    const handleScroll = () => {
+      document.documentElement.classList.add('is-scrolling');
+      clearTimeout(scrollTimeout);
+      scrollTimeout = window.setTimeout(() => {
+        document.documentElement.classList.remove('is-scrolling');
+      }, 150);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollTimeout);
+    };
   }, []);
 
   const allTags = useMemo(

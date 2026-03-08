@@ -132,6 +132,12 @@ a {
   left: -50px;
   animation: floatOrbA 9s ease-in-out infinite;
   will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+
+.is-scrolling .orb,
+html.transition-active .orb {
+  animation-play-state: paused !important;
 }
 
 :root[data-theme='dark'] .orb-a {
@@ -205,11 +211,16 @@ a {
   overflow: hidden;
   border-radius: 24px;
   border: 1px solid var(--glass-border);
-  background: var(--glass);
-  backdrop-filter: blur(20px) saturate(140%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  background: color-mix(in oklab, var(--glass) 80%, var(--bg) 20%); /* Semi-opaque fallback to reduce sampling cost */
+  backdrop-filter: blur(8px) saturate(140%);
+  -webkit-backdrop-filter: blur(8px) saturate(140%);
   box-shadow: 0 0 50px rgba(15, 25, 42, 0.15), 0 0 20px rgba(15, 25, 42, 0.08), var(--glass-highlight);
   view-transition-name: top-bar;
+  
+  /* Safari Compositor Lock */
+  contain: paint style;
+  isolation: isolate;
+  transform: translate3d(0, 0, 0);
 }
 
 /* Core View Transition API properties */
