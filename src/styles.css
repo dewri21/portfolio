@@ -203,11 +203,13 @@ html.transition-active .orb {
   We keep the base styles here but allow the layout-specific fixed positioning 
   to be handled in the main layout section.
 */
+.top-bar {
   background: color-mix(in oklab, var(--glass) 85%, var(--bg) 15%);
   backdrop-filter: blur(10px) saturate(130%);
   -webkit-backdrop-filter: blur(10px) saturate(130%);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), var(--glass-highlight);
   view-transition-name: top-bar;
+}
 
 /* Core View Transition API properties */
 html::view-transition-old(root),
