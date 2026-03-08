@@ -1250,13 +1250,6 @@ main {
   .project-card {
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15), var(--glass-highlight) !important;
   }
-
-  /* Disable VT animations to prevent layout recomposition stalls */
-  ::view-transition-group(root),
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation: none !important;
-  }
 }
 
 
