@@ -204,6 +204,9 @@ html.transition-active .orb {
   to be handled in the main layout section.
 */
 .top-bar {
+  overflow: hidden;
+  border-radius: 24px;
+  border: 1px solid var(--glass-border);
   background: color-mix(in oklab, var(--glass) 85%, var(--bg) 15%);
   backdrop-filter: blur(10px) saturate(130%);
   -webkit-backdrop-filter: blur(10px) saturate(130%);
