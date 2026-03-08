@@ -34,6 +34,7 @@
 
 * {
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent; /* Remove Android Chrome blue tap rectangle */
 }
 
 html {
@@ -46,12 +47,6 @@ body {
   font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
   color: var(--ink);
   background-color: #ffffff;
-  background-image: 
-    radial-gradient(circle at 15% 10%, rgba(255, 177, 153, 0.05) 0%, transparent 45%),
-    radial-gradient(circle at 85% 15%, rgba(255, 106, 136, 0.03) 0%, transparent 50%),
-    radial-gradient(circle at 50% 120%, rgba(246, 211, 101, 0.04) 0%, transparent 55%),
-    linear-gradient(135deg, #ffffff 0%, #fcfcfc 100%);
-  background-attachment: fixed;
 }
 
 body::before {
@@ -69,12 +64,6 @@ body::before {
 
 :root[data-theme='dark'] body {
   background-color: #000000;
-  background-image: 
-    radial-gradient(circle at 10% 0%, rgba(255, 0, 85, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 90% 10%, rgba(255, 75, 31, 0.03) 0%, transparent 45%),
-    radial-gradient(circle at 50% 100%, rgba(138, 35, 135, 0.06) 0%, transparent 55%),
-    linear-gradient(135deg, #000000 0%, #020202 50%, #000000 100%);
-  background-attachment: fixed;
 }
 
 :root[data-theme='dark'] body::before {
@@ -93,6 +82,28 @@ a {
   isolation: isolate;
 }
 
+/* Performance: Fixed background layer avoids mobile repaint-on-scroll trap */
+.app-shell::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  pointer-events: none;
+  background-image: 
+    radial-gradient(circle at 15% 10%, rgba(255, 177, 153, 0.05) 0%, transparent 45%),
+    radial-gradient(circle at 85% 15%, rgba(255, 106, 136, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 50% 120%, rgba(246, 211, 101, 0.04) 0%, transparent 55%),
+    linear-gradient(135deg, #ffffff 0%, #fcfcfc 100%);
+}
+
+:root[data-theme='dark'] .app-shell::after {
+  background-image: 
+    radial-gradient(circle at 10% 0%, rgba(255, 0, 85, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 90% 10%, rgba(255, 75, 31, 0.03) 0%, transparent 45%),
+    radial-gradient(circle at 50% 100%, rgba(138, 35, 135, 0.06) 0%, transparent 55%),
+    linear-gradient(135deg, #000000 0%, #020202 50%, #000000 100%);
+}
+
 .kinetic-bg {
   position: fixed;
   inset: 0;
@@ -108,13 +119,8 @@ a {
 .orb {
   position: absolute;
   border-radius: 50%;
-  filter: blur(120px);
-  mix-blend-mode: screen;
 }
 
-:root[data-theme='dark'] .orb {
-  mix-blend-mode: color-dodge;
-}
 
 .orb-a {
   width: clamp(300px, 45vw, 600px);
@@ -122,6 +128,8 @@ a {
   background: radial-gradient(circle, rgba(255, 177, 153, 0.08), transparent 70%);
   top: -100px;
   left: -50px;
+  animation: floatOrbA 9s ease-in-out infinite;
+  will-change: transform;
 }
 
 :root[data-theme='dark'] .orb-a {
@@ -134,6 +142,8 @@ a {
   background: radial-gradient(circle, rgba(255, 106, 136, 0.06), transparent 70%);
   right: -80px;
   top: 30%;
+  animation: floatOrbB 11s ease-in-out infinite;
+  will-change: transform;
 }
 
 :root[data-theme='dark'] .orb-b {
@@ -146,30 +156,185 @@ a {
   background: radial-gradient(circle, rgba(246, 211, 101, 0.05), transparent 70%);
   left: 20%;
   bottom: -150px;
+  animation: floatOrbC 13s ease-in-out infinite;
+  will-change: transform;
 }
 
 :root[data-theme='dark'] .orb-c {
   background: radial-gradient(circle, rgba(138, 35, 135, 0.07), transparent 70%);
 }
 
-.top-bar,
+@keyframes floatOrbA {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(24px, -20px, 0) scale(1.08); }
+}
+
+@keyframes floatOrbB {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-18px, 18px, 0) scale(0.95); }
+}
+
+@keyframes floatOrbC {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(14px, 16px, 0) rotate(8deg); }
+}
+
+
+
 .hero,
-.content-section,
-.site-footer {
+.content-section {
   position: relative;
   overflow: hidden;
   border-radius: 24px;
   border: 1px solid var(--glass-border);
   background: var(--glass);
-  backdrop-filter: blur(40px) saturate(160%);
-  -webkit-backdrop-filter: blur(40px) saturate(160%);
   box-shadow: var(--glass-shadow), var(--glass-highlight);
+  /* Macro-level hardware acceleration */
+  will-change: transform;
+  contain: layout style; /* Isolate layout calculation, but allow pre-painting off-screen to prevent scroll lag! */
+}
+
+/* 
+  Refined Header Layering:
+  We keep the base styles here but allow the layout-specific fixed positioning 
+  to be handled in the main layout section.
+*/
+.top-bar {
+  overflow: hidden;
+  border-radius: 24px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  box-shadow: 0 0 50px rgba(15, 25, 42, 0.15), 0 0 20px rgba(15, 25, 42, 0.08), var(--glass-highlight);
+  view-transition-name: top-bar;
+}
+
+/* Core View Transition API properties */
+html::view-transition-old(root),
+html::view-transition-new(root) {
+  mix-blend-mode: normal;
+  pointer-events: none;
+  animation: none;
+  /* During the snapshot, ensure the base canvas doesn't blur against itself */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* 
+  Senior Optimization: THE "FLATTENER"
+  During the 0.6s transition, we temporarily strip all GPU layer promotion 
+  and complexity from the EVERYTHING inside the viewport.
+  This forces the browser to paint a flat 2D surface for the ripple snapshot, 
+  which is orders of magnitude faster than compositing 50+ individual layers.
+*/
+html.transition-active *,
+html.transition-active *::before,
+html.transition-active *::after {
+  animation-play-state: paused !important;
+  will-change: auto !important;
+}
+
+/* 
+  Force cards to be solid and simple during the snapshot.
+  No blurs, no nested filters, just solid thematic background.
+*/
+html.transition-active .metric-card,
+html.transition-active .skill-card,
+html.transition-active .experience-card,
+html.transition-active .project-card,
+html.transition-active .education-card,
+html.transition-active .contact-card {
+  background: var(--bg) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  opacity: 1 !important;
+  transform: none !important; /* Flatten 3D transforms */
+}
+
+/* Header gets its own isolated transition to keep it smooth and glassy */
+html.transition-active .top-bar {
+  opacity: 1 !important;
+  border-color: var(--glass-border) !important;
+}
+
+/* Ensure the floating button doesn't drag down performance during the root ripple */
+html.transition-active .back-to-top {
+  box-shadow: none !important;
+  transform: none !important;
+  opacity: 0.5 !important;
+  will-change: auto !important;
+}
+
+/* 
+  FIX: Eliminate the "grayish" artifact during header and button transitions.
+  By using a very rapid staggered fade, we prevent the muddy middle-state 
+  blending of light and dark states, while ensuring elements don't disappear.
+*/
+::view-transition-old(top-bar),
+::view-transition-old(back-to-top) {
+  animation: fade-out 0.1s ease-out both;
+  mix-blend-mode: normal !important;
+}
+
+::view-transition-new(top-bar),
+::view-transition-new(back-to-top) {
+  animation: fade-in 0.1s 0.1s ease-in both;
+  mix-blend-mode: normal !important;
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Ensure global snapshots are captured cleanly without clipped overflow */
+html.transition-active {
+  overflow: hidden !important;
+}
+
+/* Going to Dark: Old (Light) shrinks on top of New (Dark) */
+:root[data-theme='dark']::view-transition-old(root) {
+  z-index: 2;
+  animation: theme-clip-out 0.65s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+:root[data-theme='dark']::view-transition-new(root) {
+  z-index: 1;
+  animation: none;
+}
+
+/* Going to Light: New (Light) expands on top of Old (Dark) */
+:root[data-theme='light']::view-transition-new(root) {
+  z-index: 2;
+  animation: theme-clip-in 0.65s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+:root[data-theme='light']::view-transition-old(root) {
+  z-index: 1;
+  animation: none;
+}
+
+@keyframes theme-clip-out {
+  0% { clip-path: circle(var(--transition-r, 100vw) at var(--transition-x, 50%) var(--transition-y, 50%)); }
+  100% { clip-path: circle(0px at var(--transition-x, 50%) var(--transition-y, 50%)); }
+}
+
+@keyframes theme-clip-in {
+  0% { clip-path: circle(0px at var(--transition-x, 50%) var(--transition-y, 50%)); }
+  100% { clip-path: circle(var(--transition-r, 100vw) at var(--transition-x, 50%) var(--transition-y, 50%)); }
+}
+
+:root[data-theme='dark'] .top-bar {
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 0, 0, 0.5), var(--glass-highlight);
 }
 
 .top-bar::before,
 .hero::before,
-.content-section::before,
-.site-footer::before {
+.content-section::before {
   content: '';
   position: absolute;
   inset: 1px;
@@ -181,22 +346,33 @@ a {
 
 :root[data-theme='dark'] .top-bar::before,
 :root[data-theme='dark'] .hero::before,
-:root[data-theme='dark'] .content-section::before,
-:root[data-theme='dark'] .site-footer::before {
+:root[data-theme='dark'] .content-section::before {
   opacity: 0.3;
 }
 
 .top-bar {
   width: min(1140px, calc(100% - 2rem));
   margin: 0.85rem auto 0;
-  position: sticky;
-  top: 0.75rem;
-  z-index: 24;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100; /* Extremely high to clear all page content and buttons */
+  transform: translateZ(0); /* Hardware acceleration for glass paint */
+  will-change: transform, max-height;
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 0 0.85rem;
   padding: 1.1rem 0.95rem;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, border-color 0.3s ease;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  justify-self: end;
 }
 
 .brand {
@@ -221,6 +397,10 @@ a {
   gap: 0.75rem;
 }
 
+.header-actions-inner {
+  display: contents; /* Fixes desktop flex layout for navigation items and theme toggle */
+}
+
 .header-actions nav ul {
   display: flex;
   align-items: center;
@@ -236,13 +416,18 @@ a {
 .menu-toggle,
 .primary-cta,
 .secondary-cta,
-.tag-button,
-.site-footer a {
+.tag-button {
   border: 1px solid var(--glass-border);
   background: var(--glass-strong);
-  backdrop-filter: blur(18px) saturate(145%);
-  -webkit-backdrop-filter: blur(18px) saturate(145%);
   box-shadow: var(--panel-shadow), var(--glass-highlight);
+  transform: translateZ(0); /* GPU layer promotion */
+}
+
+.dropdown-content,
+.tooltip {
+  background: var(--glass-strong);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow), var(--glass-highlight);
 }
 
 .header-actions nav a {
@@ -290,6 +475,22 @@ a {
   height: 2px;
   border-radius: 3px;
   background: var(--ink);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+  transform-origin: center;
+}
+
+/* Hamburger → X animation */
+.menu-open .menu-icon span:nth-child(1) {
+  transform: translateY(calc(2px + 0.17rem)) rotate(45deg);
+}
+
+.menu-open .menu-icon span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.menu-open .menu-icon span:nth-child(3) {
+  transform: translateY(calc(-2px - 0.17rem)) rotate(-45deg);
 }
 
 .theme-toggle {
@@ -305,21 +506,59 @@ a {
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.18s ease;
 }
 
+.theme-toggle.icon-only {
+  padding: 0.52rem;
+  aspect-ratio: 1;
+  justify-content: center;
+}
+
 .theme-icon {
   display: inline-flex;
   align-items: center;
   line-height: 1;
 }
 
+/* Fluid Sun/Moon SVG Animation */
+.theme-icon-animated {
+  display: inline-flex;
+  align-items: center;
+  transform-origin: center;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-icon-animated[data-mode="dark"] {
+  transform: rotate(-90deg);
+}
+
+.sun-group, 
+.moon-group {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+.sun-group.hidden,
+.moon-group.hidden {
+  opacity: 0;
+  transform: scale(0.5) rotate(45deg);
+}
+
+.moon-outline {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .theme-toggle:hover {
-  transform: translateY(-2px) rotate(2deg);
+  transform: translateY(-2px);
   background: var(--glass);
   box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2), inset 0 2px 2px rgba(255, 255, 255, 0.4);
 }
 
+.theme-toggle[data-mode="dark"]:hover {
+  transform: translateY(-2px) rotate(2deg);
+}
+
 main {
   width: min(1140px, calc(100% - 2rem));
-  margin: 1.5rem auto 4rem;
+  margin: 7.5rem auto 4rem; /* Compensate for fixed header removal from document flow */
   display: grid;
   gap: 1.7rem;
 }
@@ -329,6 +568,14 @@ main {
 .hero,
 .content-section {
   padding: clamp(2rem, 4vw, 3.5rem);
+}
+
+.hero {
+  scroll-margin-top: 7.5rem; /* Match main margin-top for spacious hero positioning */
+}
+
+.content-section {
+  scroll-margin-top: 7.2rem;
 }
 
 .hero h1 {
@@ -431,10 +678,8 @@ main {
   border-radius: 15px;
   border: 1px solid var(--glass-border);
   background: var(--glass-strong);
-  backdrop-filter: blur(18px) saturate(145%);
-  -webkit-backdrop-filter: blur(18px) saturate(145%);
   box-shadow: var(--panel-shadow), var(--glass-highlight);
-  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.3s ease, background 0.3s ease;
 }
 
 .metric-card:hover,
@@ -710,32 +955,41 @@ main {
   text-underline-offset: 3px;
 }
 
-.site-footer {
-  width: min(1140px, calc(100% - 2rem));
-  margin: 0 auto 2rem;
-  padding: 0.82rem 1rem;
+/* Floating Back-to-Top Button */
+.back-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 10; /* Lower than header (24) to prevent click blocking */
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent);
+  box-shadow: 0 10px 20px color-mix(in oklab, var(--accent) 40%, transparent 60%);
+  color: #ffffff;
+  cursor: pointer;
   display: flex;
-  gap: 0.8rem;
-  justify-content: space-between;
   align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(1rem) translateZ(0);
+  pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease, background 0.2s ease;
+  view-transition-name: back-to-top;
 }
 
-.site-footer p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.83rem;
-  position: relative;
-  z-index: 1;
+.back-to-top.visible {
+  opacity: 1;
+  transform: translateY(0) translateZ(0);
+  pointer-events: auto;
 }
 
-.site-footer a {
-  position: relative;
-  z-index: 1;
-  font-size: 0.83rem;
-  text-decoration: none;
-  border-radius: 999px;
-  padding: 0.3rem 0.58rem;
+.back-to-top:hover {
+  transform: translateY(-3px) translateZ(0);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25), inset 0 2px 3px rgba(255, 255, 255, 0.5);
 }
+
 
 .empty-state {
   margin: 0.8rem 0 0;
@@ -760,8 +1014,7 @@ main {
 .primary-cta:focus-visible,
 .secondary-cta:focus-visible,
 .tag-button:focus-visible,
-.query-input-shell input:focus-visible,
-.site-footer a:focus-visible {
+.query-input-shell input:focus-visible {
   outline: none;
   box-shadow: var(--focus-ring), var(--panel-shadow);
 }
@@ -772,10 +1025,6 @@ main {
     grid-template-columns: 1fr;
   }
 
-  .site-footer {
-    flex-direction: column;
-    align-items: flex-start;
-  }
 }
 
 @media (max-width: 840px) {
@@ -788,25 +1037,39 @@ main {
 
   .menu-toggle {
     display: inline-flex;
-    justify-self: end;
+  }
+
+  .brand {
+    order: 1;
+  }
+
+  .header-controls {
+    order: 2;
   }
 
   .header-actions {
     grid-column: 1 / -1;
     width: 100%;
+    order: 3;
+    align-self: start;
+    display: block; /* Removing grid hack */
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+    margin-top: 0;
+    transition: max-height 0.35s ease, opacity 0.25s ease, margin-top 0.3s ease;
+  }
+
+  .header-actions-inner {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
     justify-content: flex-start;
     gap: 0.4rem;
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
-    pointer-events: none;
-    margin-top: 0;
     padding-top: 0;
-    transition: max-height 0.24s ease, opacity 0.2s ease, margin-top 0.2s ease, padding-top 0.2s ease;
+    transition: padding-top 0.3s ease;
   }
 
   .header-actions nav {
@@ -814,10 +1077,13 @@ main {
   }
 
   .top-bar.menu-open .header-actions {
-    max-height: 32rem;
+    max-height: 200px; /* Finely tuned to intrinsic height to completely eliminate jitter without resorting to grid */
     opacity: 1;
     pointer-events: auto;
     margin-top: 0.58rem;
+  }
+
+  .top-bar.menu-open .header-actions-inner {
     padding-top: 0.56rem;
   }
 
@@ -838,17 +1104,7 @@ main {
     transition: background 0.18s ease, border-color 0.18s ease;
   }
 
-  .header-actions .theme-toggle {
-    width: auto;
-    padding: 0.42rem 0.76rem;
-    border: 1px solid color-mix(in oklab, var(--accent) 40%, transparent 60%);
-    border-radius: 999px;
-    background: color-mix(in oklab, var(--accent) 10%, transparent 90%);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    box-shadow: none;
-    transition: background 0.18s ease, border-color 0.18s ease;
-  }
+
 
   .header-actions nav a:hover {
     background: rgba(128, 128, 128, 0.12);
@@ -856,11 +1112,7 @@ main {
     transform: none;
   }
 
-  .header-actions .theme-toggle:hover {
-    background: color-mix(in oklab, var(--accent) 18%, transparent 82%);
-    box-shadow: none;
-    transform: none;
-  }
+
 }
 
 @media (max-width: 640px) {
@@ -895,3 +1147,36 @@ main {
 .app-shell[data-motion='reduced'] .tag-button {
   transition: none;
 }
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* 
+  We want the LIGHT state to always be the one on top during the transition.
+  If target is dark (we are contracting light), old is light.
+  If target is light (we are expanding light), new is light.
+*/
+[data-theme='dark']::view-transition-old(root) {
+  z-index: 9999;
+}
+[data-theme='dark']::view-transition-new(root) {
+  z-index: 1;
+}
+
+[data-theme='light']::view-transition-new(root) {
+  z-index: 9999;
+}
+[data-theme='light']::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-group(theme-icon) {
+  animation-duration: 0.65s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+

@@ -1,5 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { AnimatedCounter } from './components/AnimatedCounter';
+import { ExperienceCard, ProjectCard } from './components/CardComponents';
 import { KineticBackground } from './components/KineticBackground';
 import { SectionHeading } from './components/SectionHeading';
 import { StackFadeSection } from './components/StackFadeSection';
@@ -26,29 +28,15 @@ const SECTION_LINKS = [
   { id: 'contact', label: 'Contact' }
 ];
 
-function formatPeriod(start: string, end: string): string {
-  const [startYear, startMonth] = start.split('-').map(Number);
-  const startDate = new Date(startYear, startMonth - 1, 1);
-  const startText = startDate.toLocaleString('en-US', { month: 'short', year: 'numeric' });
-
-  if (end === 'Present') {
-    return `${startText} - Present`;
-  }
-
-  const [endYear, endMonth] = end.split('-').map(Number);
-  const endDate = new Date(endYear, endMonth - 1, 1);
-  const endText = endDate.toLocaleString('en-US', { month: 'short', year: 'numeric' });
-
-  return `${startText} - ${endText}`;
-}
-
 export default function App(): JSX.Element {
   const [theme, setTheme] = useState<ThemeMode>(() => resolveInitialTheme());
   const [filterState, setFilterState] = useState<FilterState>(INITIAL_FILTER);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+  const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
+  const headerRef = useRef<HTMLElement>(null);
   const reducedMotion = usePrefersReducedMotion();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     applyTheme(theme);
   }, [theme]);
 
@@ -68,6 +56,40 @@ export default function App(): JSX.Element {
     return () => desktopQuery.removeEventListener('change', onDesktop);
   }, []);
 
+  // Close mobile menu on outside click
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const onClickOutside = (e: MouseEvent) => {
+      if (headerRef.current && !headerRef.current.contains(e.target as Node)) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('click', onClickOutside, true);
+    return () => document.removeEventListener('click', onClickOutside, true);
+  }, [mobileMenuOpen]);
+
+  // No scroll listeners remain for absolute performance.
+
+
+  // Use IntersectionObserver to detect strictly the "back to top" threshold
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setShowBackToTop(!entry.isIntersecting);
+      },
+      { threshold: 0 }
+    );
+
+    const pivot = document.getElementById('scroll-pivot');
+    if (pivot) {
+      observer.observe(pivot);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   const allTags = useMemo(
     () => getAllTags(portfolioData.experience, portfolioData.projects),
     []
@@ -79,11 +101,12 @@ export default function App(): JSX.Element {
     () => filterExperience(portfolioData.experience, filterState),
     [filterState]
   );
-
+  
   const filteredProjects = useMemo(
     () => filterProjects(portfolioData.projects, filterState),
     [filterState]
   );
+
   const activeFocusLabel =
     filterState.activeTag === 'All'
       ? 'All focus areas'
@@ -91,43 +114,100 @@ export default function App(): JSX.Element {
 
   return (
     <div className="app-shell" data-motion={reducedMotion ? 'reduced' : 'full'}>
+      <div id="scroll-pivot" aria-hidden="true" style={{ position: 'absolute', top: '300px', left: 0, width: 1, height: 1, pointerEvents: 'none', visibility: 'hidden' }} />
       <KineticBackground reducedMotion={reducedMotion} />
 
-      <header className={mobileMenuOpen ? 'top-bar menu-open' : 'top-bar'}>
+      <header ref={headerRef} className={mobileMenuOpen ? 'top-bar menu-open' : 'top-bar'}>
         <p className="brand">{portfolioData.identity.name}</p>
-        <button
-          type="button"
-          className="menu-toggle"
-          aria-expanded={mobileMenuOpen}
-          aria-controls="header-actions"
-          aria-label="Toggle navigation menu"
-          onClick={() => setMobileMenuOpen((current) => !current)}
-        >
-          <span className="menu-icon" aria-hidden="true">
-            <span />
-            <span />
-            <span />
-          </span>
-        </button>
         <div className="header-actions" id="header-actions">
-          <nav aria-label="Primary sections">
-            <ul>
-              {SECTION_LINKS.map((section) => (
-                <li key={section.id}>
-                  <a href={`#${section.id}`} onClick={() => setMobileMenuOpen(false)}>
-                    {section.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          <div className="header-actions-inner">
+            <nav aria-label="Primary sections">
+              <ul>
+                {SECTION_LINKS.map((section) => (
+                  <li key={section.id}>
+                    <a 
+                      href={`#${section.id}`} 
+                      onClick={(e) => {
+                        if (mobileMenuOpen) {
+                          e.preventDefault();
+                          setMobileMenuOpen(false);
+                          setTimeout(() => {
+                            const target = document.getElementById(section.id);
+                            if (target) {
+                              target.scrollIntoView({ behavior: 'smooth' });
+                              window.history.pushState(null, '', `#${section.id}`);
+                            }
+                          }, 350); // Meticulously matched to CSS transition duration
+                        }
+                      }}
+                    >
+                      {section.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
+        </div>
+
+        <div className="header-controls">
           <ThemeToggle
             mode={theme}
-            onToggle={() => {
-              setTheme((current) => toggleTheme(current));
-              setMobileMenuOpen(false);
+            onToggle={(e) => {
+              const isToDark = theme === 'light';
+              const nextTheme = isToDark ? 'dark' : 'light';
+              
+              const toggleMode = () => setTheme(nextTheme);
+
+              // Cinematic View Transition API fallback
+              if (!document.startViewTransition) {
+                toggleMode();
+                return;
+              }
+
+              // Capture click coordinates for the circular ripple center
+              const x = e.clientX;
+              const y = e.clientY;
+              const endRadius = Math.hypot(
+                Math.max(x, window.innerWidth - x),
+                Math.max(y, window.innerHeight - y)
+              );
+
+              // Pass coordinates via inline CSS variables for the native CSS View Transition
+              document.documentElement.style.setProperty('--transition-x', `${x}px`);
+              document.documentElement.style.setProperty('--transition-y', `${y}px`);
+              document.documentElement.style.setProperty('--transition-r', `${endRadius}px`);
+
+              // Add transition active class to hide backdrop filters during the snapshot
+              document.documentElement.classList.add('transition-active');
+
+              const transition = document.startViewTransition(() => {
+                flushSync(() => {
+                  setTheme(nextTheme);
+                });
+              });
+
+              // Remove the class once the transition animation is complete
+              transition.finished.finally(() => {
+                document.documentElement.classList.remove('transition-active');
+              });
             }}
+            iconOnly={true} 
           />
+          <button
+            type="button"
+            className="menu-toggle"
+            aria-expanded={mobileMenuOpen}
+            aria-controls="header-actions"
+            aria-label="Toggle navigation menu"
+            onClick={() => setMobileMenuOpen((current) => !current)}
+          >
+            <span className="menu-icon" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </span>
+          </button>
         </div>
       </header>
 
@@ -206,29 +286,7 @@ export default function App(): JSX.Element {
               <p className="empty-state">No matching roles found. Try a broader tag or keyword.</p>
             ) : (
               filteredExperience.map((item) => (
-                <article key={item.id} className="timeline-item">
-                  <div className="timeline-marker" aria-hidden="true" />
-                  <div className="timeline-content">
-                    <p className="timeline-period">{formatPeriod(item.start, item.end)}</p>
-                    <h3>{item.role}</h3>
-                    <p className="timeline-company">
-                      {item.company} · {item.location}
-                    </p>
-                    <p>{item.summary}</p>
-                    <ul className="achievement-list">
-                      {item.achievements.map((achievement) => (
-                        <li key={achievement}>{achievement}</li>
-                      ))}
-                    </ul>
-                    <div className="chip-row">
-                      {item.tags.map((tag) => (
-                        <span key={`${item.id}-${tag}`} className="chip">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </article>
+                <ExperienceCard key={item.id} item={item} />
               ))
             )}
           </div>
@@ -270,20 +328,7 @@ export default function App(): JSX.Element {
               <p className="empty-state">No matching projects found. Try another filter.</p>
             ) : (
               filteredProjects.map((project) => (
-                <article className="project-card" key={project.id} data-testid="project-card">
-                  <p className="project-period">{project.period}</p>
-                  <h3>{project.name}</h3>
-                  <p>{project.description}</p>
-                  <p className="project-impact">{project.impact}</p>
-                  <p className="project-stack">Stack: {project.stack.join(' • ')}</p>
-                  <div className="chip-row">
-                    {project.tags.map((tag) => (
-                      <span key={`${project.id}-${tag}`} className="chip">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </article>
+                <ProjectCard key={project.id} project={project} />
               ))
             )}
           </div>
@@ -338,12 +383,17 @@ export default function App(): JSX.Element {
           </div>
         </StackFadeSection>
       </main>
-      <footer className="site-footer">
-        <p>
-          Built with React, TypeScript, and Framer Motion. Focused on measurable quality outcomes.
-        </p>
-        <a href="#hero">Back to top</a>
-      </footer>
+
+      <button
+        type="button"
+        className={`back-to-top ${showBackToTop ? 'visible' : ''}`}
+        aria-label="Back to top"
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M18 15l-6-6-6 6" />
+        </svg>
+      </button>
     </div>
   );
 }

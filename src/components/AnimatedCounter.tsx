@@ -1,5 +1,4 @@
-import { animate, useMotionValue, useTransform, motion } from 'framer-motion';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 interface AnimatedCounterProps {
   value: number;
@@ -16,35 +15,46 @@ export function AnimatedCounter({
   description,
   reducedMotion
 }: AnimatedCounterProps): JSX.Element {
-  const count = useMotionValue(0);
-  const rounded = useTransform(count, (latest) => Math.round(latest));
+  const [count, setCount] = useState(reducedMotion ? value : 0);
 
   useEffect(() => {
     if (reducedMotion) {
-      count.set(value);
+      setCount(value);
       return;
     }
 
-    const controls = animate(count, value, {
-      duration: 1.1,
-      ease: 'easeOut'
-    });
+    let startTime: number | null = null;
+    const duration = 1100; // 1.1s
+    let animationFrame: number;
 
-    return () => controls.stop();
-  }, [count, reducedMotion, value]);
+    const easeOutStrk = (t: number) => 1 - Math.pow(1 - t, 3); // cubic easeOut
+
+    const step = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = timestamp - startTime;
+      
+      if (progress < duration) {
+        const easeProgress = easeOutStrk(progress / duration);
+        setCount(Math.round(easeProgress * value));
+        animationFrame = requestAnimationFrame(step);
+      } else {
+        setCount(value);
+      }
+    };
+
+    animationFrame = requestAnimationFrame(step);
+
+    return () => cancelAnimationFrame(animationFrame);
+  }, [value, reducedMotion]);
 
   return (
-    <motion.article
-      className="metric-card"
-      whileHover={reducedMotion ? undefined : { y: -4, rotateX: 2 }}
-      transition={{ duration: 0.2 }}
-    >
+    <article className="metric-card">
       <p className="metric-value" aria-label={`${label} ${value}${suffix ?? ''}`}>
-        <motion.span>{rounded}</motion.span>
+        <span>{count}</span>
         {suffix ?? ''}
       </p>
       <p className="metric-label">{label}</p>
       <p className="metric-description">{description}</p>
-    </motion.article>
+    </article>
   );
 }
