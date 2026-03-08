@@ -203,21 +203,11 @@ html.transition-active .orb {
   We keep the base styles here but allow the layout-specific fixed positioning 
   to be handled in the main layout section.
 */
-.top-bar {
-  overflow: hidden;
-  border-radius: 24px;
-  border: 1px solid var(--glass-border);
-  background: color-mix(in oklab, var(--glass) 80%, var(--bg) 20%); /* Semi-opaque fallback to reduce sampling cost */
-  backdrop-filter: blur(8px) saturate(140%);
-  -webkit-backdrop-filter: blur(8px) saturate(140%);
-  box-shadow: 0 0 50px rgba(15, 25, 42, 0.15), 0 0 20px rgba(15, 25, 42, 0.08), var(--glass-highlight);
+  background: color-mix(in oklab, var(--glass) 85%, var(--bg) 15%);
+  backdrop-filter: blur(10px) saturate(130%);
+  -webkit-backdrop-filter: blur(10px) saturate(130%);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), var(--glass-highlight);
   view-transition-name: top-bar;
-  
-  /* Safari Compositor Lock */
-  contain: paint style;
-  isolation: isolate;
-  transform: translate3d(0, 0, 0);
-}
 
 /* Core View Transition API properties */
 html::view-transition-old(root),
@@ -236,7 +226,13 @@ html::view-transition-new(root) {
 ::view-transition-image-pair(root),
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  mix-blend-mode: normal !important; /* Force perfectly opaque snapshots */
+  mix-blend-mode: normal !important;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.6s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* 
@@ -1218,39 +1214,3 @@ main {
   animation-duration: 0.65s;
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
-
-/* 
-  High-Octane Safari GPU Refinements
-  Using @supports hack to strictly target WebKit (Safari/iOS)
-*/
-@supports (-webkit-touch-callout: none) {
-  /* Disable expensive background animations */
-  .orb {
-    animation: none !important;
-    transform: none !important;
-  }
-
-  /* Reduce sampling cost for frosted glass */
-  .top-bar {
-    backdrop-filter: blur(6px) saturate(110%) !important;
-    -webkit-backdrop-filter: blur(6px) saturate(110%) !important;
-  }
-
-  /* Simplify background gradients: Replace layered radials with static linear fallback */
-  .app-shell::after {
-    background-image: linear-gradient(135deg, var(--bg-start), var(--bg-end)) !important;
-  }
-
-  /* Reduce shadow complexity for better compositor performance */
-  .hero,
-  .content-section,
-  .top-bar,
-  .metric-card,
-  .skill-card,
-  .project-card {
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15), var(--glass-highlight) !important;
-  }
-}
-
-
-
