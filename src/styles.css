@@ -41,11 +41,19 @@
 
 html {
   scroll-behavior: smooth;
-  background-color: var(--bg);
+  background-color: var(--bg-start);
+  background-image: 
+    radial-gradient(circle at 20% 15%, rgba(255,120,60,0.15), transparent 55%),
+    radial-gradient(circle at 80% 25%, rgba(255,120,60,0.12), transparent 55%),
+    radial-gradient(circle at 50% 85%, rgba(255,120,60,0.10), transparent 60%),
+    linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%);
+  background-attachment: fixed;
+  background-size: cover;
 }
 
 html[data-theme='dark'] {
-  background-color: var(--bg);
+  background-color: var(--bg-start);
+  /* The CSS variables seamlessly handle the dark to light color transition */
 }
 
 body {
@@ -87,20 +95,6 @@ a {
   position: relative;
   overflow-x: clip;
   isolation: isolate;
-}
-
-/* Performance: Static ambient glow layer */
-.app-shell::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: -2;
-  background:
-    radial-gradient(circle at 20% 15%, rgba(255,120,60,0.15), transparent 55%),
-    radial-gradient(circle at 80% 25%, rgba(255,120,60,0.12), transparent 55%),
-    radial-gradient(circle at 50% 85%, rgba(255,120,60,0.10), transparent 60%),
-    linear-gradient(135deg, var(--bg-start), var(--bg-end));
 }
 
 /* Kinetic system removed as requested for static aesthetic. */
@@ -327,7 +321,7 @@ html.transition-active {
   width: min(1140px, calc(100% - 2rem));
   margin: 0.85rem auto 0;
   position: fixed;
-  top: env(safe-area-inset-top, 0px);
+  top: 0;
   left: 0;
   right: 0;
   z-index: 100; /* Extremely high to clear all page content and buttons */
@@ -535,7 +529,7 @@ html.transition-active {
 
 main {
   width: min(1140px, calc(100% - 2rem));
-  margin: calc(7.5rem + env(safe-area-inset-top, 0px)) auto calc(4rem + env(safe-area-inset-bottom, 0px)); /* Compensate for fixed header removal from document flow */
+  margin: 7.5rem auto 4rem; /* Compensate for fixed header removal from document flow */
   display: grid;
   gap: 1.7rem;
 }
@@ -548,11 +542,11 @@ main {
 }
 
 .hero {
-  scroll-margin-top: calc(7.5rem + env(safe-area-inset-top, 0px)); /* Match main margin-top for spacious hero positioning */
+  scroll-margin-top: 7.5rem; /* Match main margin-top for spacious hero positioning */
 }
 
 .content-section {
-  scroll-margin-top: calc(7.2rem + env(safe-area-inset-top, 0px));
+  scroll-margin-top: 7.2rem;
 }
 
 .hero h1 {
