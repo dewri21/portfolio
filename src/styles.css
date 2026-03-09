@@ -160,33 +160,6 @@ html::view-transition-new(root) {
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 
-  Senior Optimization: THE "FLATTENER"
-  During the 0.6s transition, we temporarily strip all GPU layer promotion 
-  and complexity from the EVERYTHING inside the viewport.
-  This forces the browser to paint a flat 2D surface for the ripple snapshot, 
-  which is orders of magnitude faster than compositing 50+ individual layers.
-*/
-html.transition-active *,
-html.transition-active *::before,
-html.transition-active *::after {
-  animation-play-state: paused !important;
-  will-change: auto !important;
-  transition: none !important;
-  transition-duration: 0s !important;
-  transition-delay: 0s !important;
-}
-
-/* 
-  EXCEPTION: We *want* the theme toggle icon to morph between sun/moon
-  during the ripple, so we specifically re-enable its transitions.
-*/
-html.transition-active .theme-icon-animated,
-html.transition-active .theme-icon-animated * {
-  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  transition-duration: 0.45s !important;
-  transition-delay: 0s !important;
-}
 
 
 /* Ensure the floating button doesn't drag down performance during the root ripple */
