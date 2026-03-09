@@ -190,6 +190,17 @@ html.transition-active *::after {
 }
 
 /* 
+  EXCEPTION: We *want* the theme toggle icon to morph between sun/moon
+  during the ripple, so we specifically re-enable its transitions.
+*/
+html.transition-active .theme-icon-animated,
+html.transition-active .theme-icon-animated * {
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition-duration: 0.45s !important;
+  transition-delay: 0s !important;
+}
+
+/* 
   Force cards to be solid and simple during the snapshot.
   No blurs, no nested filters, just solid thematic background.
 */
@@ -482,6 +493,7 @@ html.transition-active {
   align-items: center;
   transform-origin: center;
   transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  view-transition-name: theme-icon;
 }
 
 .theme-icon-animated[data-mode="dark"] {
