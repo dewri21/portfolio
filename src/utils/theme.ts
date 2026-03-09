@@ -26,6 +26,12 @@ export function resolveInitialTheme(): ThemeMode {
 export function applyTheme(mode: ThemeMode): void {
   if (typeof document !== 'undefined') {
     document.documentElement.setAttribute('data-theme', mode);
+    
+    // Dynamically sync Safari/Chrome mobile status bar background
+    const metaThemeColor = document.getElementById('theme-color-meta');
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute('content', mode === 'dark' ? '#0a0a0a' : '#f2f5fa');
+    }
   }
 
   if (typeof window !== 'undefined') {

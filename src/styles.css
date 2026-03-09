@@ -41,6 +41,11 @@
 
 html {
   scroll-behavior: smooth;
+  background-color: var(--bg);
+}
+
+html[data-theme='dark'] {
+  background-color: var(--bg);
 }
 
 body {
@@ -48,7 +53,7 @@ body {
   min-height: 100vh;
   font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
   color: var(--ink);
-  background-color: #ffffff;
+  background: transparent;
 }
 
 body::before {
@@ -65,7 +70,7 @@ body::before {
 }
 
 :root[data-theme='dark'] body {
-  background-color: #000000;
+  background: transparent;
 }
 
 :root[data-theme='dark'] body::before {
