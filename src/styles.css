@@ -116,18 +116,7 @@ a {
   contain: layout paint;
 }
 
-.hero::before {
-  content: "";
-  position: absolute;
-  width: 500px;
-  height: 500px;
-  top: -150px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: radial-gradient(circle, rgba(255,120,60,0.18), transparent 70%);
-  pointer-events: none;
-  z-index: -1;
-}
+
 
 /* 
   Refined Header Layering:
