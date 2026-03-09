@@ -2,7 +2,6 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { AnimatedCounter } from './components/AnimatedCounter';
 import { ExperienceCard, ProjectCard } from './components/CardComponents';
-import { KineticBackground } from './components/KineticBackground';
 import { SectionHeading } from './components/SectionHeading';
 import { StackFadeSection } from './components/StackFadeSection';
 import { TagFilter } from './components/TagFilter';
@@ -87,23 +86,7 @@ export default function App(): JSX.Element {
     return () => observer.disconnect();
   }, []);
 
-  // Performance: Detect scrolling state to pause expensive background animations
-  useEffect(() => {
-    let scrollTimeout: number;
-    const handleScroll = () => {
-      document.documentElement.classList.add('is-scrolling');
-      clearTimeout(scrollTimeout);
-      scrollTimeout = window.setTimeout(() => {
-        document.documentElement.classList.remove('is-scrolling');
-      }, 150);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      clearTimeout(scrollTimeout);
-    };
-  }, []);
+  // Removed scroll performance timeout mechanism as kinetic background animations were deprecated for static performance.
 
   const allTags = useMemo(
     () => getAllTags(portfolioData.experience, portfolioData.projects),
@@ -130,7 +113,6 @@ export default function App(): JSX.Element {
   return (
     <div className="app-shell" data-motion={reducedMotion ? 'reduced' : 'full'}>
       <div id="scroll-pivot" aria-hidden="true" style={{ position: 'absolute', top: '300px', left: 0, width: 1, height: 1, pointerEvents: 'none', visibility: 'hidden' }} />
-      <KineticBackground reducedMotion={reducedMotion} />
 
       <header ref={headerRef} className={mobileMenuOpen ? 'top-bar menu-open' : 'top-bar'}>
         <p className="brand">{portfolioData.identity.name}</p>

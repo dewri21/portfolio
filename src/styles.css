@@ -84,105 +84,21 @@ a {
   isolation: isolate;
 }
 
-/* Performance: Fixed background layer avoids mobile repaint-on-scroll trap */
-.app-shell::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -3;
-  pointer-events: none;
-  background-image: 
-    radial-gradient(circle at 15% 10%, rgba(255, 177, 153, 0.05) 0%, transparent 45%),
-    radial-gradient(circle at 85% 15%, rgba(255, 106, 136, 0.03) 0%, transparent 50%),
-    radial-gradient(circle at 50% 120%, rgba(246, 211, 101, 0.04) 0%, transparent 55%),
-    linear-gradient(135deg, #ffffff 0%, #fcfcfc 100%);
-}
-
-:root[data-theme='dark'] .app-shell::after {
-  background-image: 
-    radial-gradient(circle at 10% 0%, rgba(255, 0, 85, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 90% 10%, rgba(255, 75, 31, 0.03) 0%, transparent 45%),
-    radial-gradient(circle at 50% 100%, rgba(138, 35, 135, 0.06) 0%, transparent 55%),
-    linear-gradient(135deg, #000000 0%, #020202 50%, #000000 100%);
-}
-
-.kinetic-bg {
+/* Performance: Static ambient glow layer */
+.app-shell::before {
+  content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: -1;
-  opacity: 0.65;
+  z-index: -2;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(255,120,60,0.15), transparent 55%),
+    radial-gradient(circle at 80% 25%, rgba(255,120,60,0.12), transparent 55%),
+    radial-gradient(circle at 50% 85%, rgba(255,120,60,0.10), transparent 60%),
+    linear-gradient(135deg, var(--bg-start), var(--bg-end));
 }
 
-:root[data-theme='dark'] .kinetic-bg {
-  opacity: 0.95;
-}
-
-.orb {
-  position: absolute;
-  border-radius: 50%;
-}
-
-
-.orb-a {
-  width: clamp(300px, 45vw, 600px);
-  height: clamp(300px, 45vw, 600px);
-  background: radial-gradient(circle, rgba(255, 177, 153, 0.08), transparent 70%);
-  top: -100px;
-  left: -50px;
-  animation: floatOrbA 9s ease-in-out infinite;
-  transform: translate3d(0, 0, 0);
-}
-
-.is-scrolling .orb,
-html.transition-active .orb {
-  animation-play-state: paused !important;
-}
-
-:root[data-theme='dark'] .orb-a {
-  background: radial-gradient(circle, rgba(255, 75, 31, 0.1), transparent 70%);
-}
-
-.orb-b {
-  width: clamp(250px, 40vw, 550px);
-  height: clamp(250px, 40vw, 550px);
-  background: radial-gradient(circle, rgba(255, 106, 136, 0.06), transparent 70%);
-  right: -80px;
-  top: 30%;
-  animation: floatOrbB 11s ease-in-out infinite;
-}
-
-:root[data-theme='dark'] .orb-b {
-  background: radial-gradient(circle, rgba(255, 0, 85, 0.08), transparent 70%);
-}
-
-.orb-c {
-  width: clamp(350px, 50vw, 750px);
-  height: clamp(350px, 50vw, 750px);
-  background: radial-gradient(circle, rgba(246, 211, 101, 0.05), transparent 70%);
-  left: 20%;
-  bottom: -150px;
-  animation: floatOrbC 13s ease-in-out infinite;
-}
-
-:root[data-theme='dark'] .orb-c {
-  background: radial-gradient(circle, rgba(138, 35, 135, 0.07), transparent 70%);
-}
-
-@keyframes floatOrbA {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-  50% { transform: translate3d(24px, -20px, 0) scale(1.08); }
-}
-
-@keyframes floatOrbB {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-  50% { transform: translate3d(-18px, 18px, 0) scale(0.95); }
-}
-
-@keyframes floatOrbC {
-  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
-  50% { transform: translate3d(14px, 16px, 0) rotate(8deg); }
-}
+/* Kinetic system removed as requested for static aesthetic. */
 
 
 
@@ -192,12 +108,26 @@ html.transition-active .orb {
   overflow: hidden;
   border-radius: 24px;
   border: 1px solid var(--glass-border);
-  background: var(--glass);
+  background: color-mix(in oklab, var(--glass) 80%, transparent 20%);
+  backdrop-filter: blur(6px);
   box-shadow: var(--glass-shadow), var(--glass-highlight);
   /* High-Performance Engine: Deep browser optimizations */
   content-visibility: auto;
   contain-intrinsic-size: auto 800px;
   contain: layout paint;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  top: -150px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(255,120,60,0.18), transparent 70%);
+  pointer-events: none;
+  z-index: -1;
 }
 
 /* 
