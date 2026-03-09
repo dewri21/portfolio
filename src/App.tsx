@@ -2,7 +2,6 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { AnimatedCounter } from './components/AnimatedCounter';
 import { ExperienceCard, ProjectCard } from './components/CardComponents';
-import { KineticBackground } from './components/KineticBackground';
 import { SectionHeading } from './components/SectionHeading';
 import { StackFadeSection } from './components/StackFadeSection';
 import { TagFilter } from './components/TagFilter';
