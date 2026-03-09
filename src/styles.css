@@ -188,31 +188,6 @@ html.transition-active .theme-icon-animated * {
   transition-delay: 0s !important;
 }
 
-/* 
-  Force cards to be solid and simple during the snapshot.
-  No blurs, no nested filters, just solid thematic background.
-*/
-html.transition-active .metric-card,
-html.transition-active .skill-card,
-html.transition-active .experience-card,
-html.transition-active .project-card,
-html.transition-active .education-card,
-html.transition-active .contact-card,
-html.transition-active .timeline-content,
-html.transition-active .filter-insights,
-html.transition-active .focus-list li {
-  background: color-mix(in oklab, var(--glass) 80%, transparent 20%) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  opacity: 1 !important;
-  transform: none !important; /* Flatten 3D transforms */
-}
-
-/* Header gets its own isolated transition to keep it smooth and glassy */
-html.transition-active .top-bar {
-  opacity: 1 !important;
-  border-color: var(--glass-border) !important;
-}
 
 /* Ensure the floating button doesn't drag down performance during the root ripple */
 html.transition-active .back-to-top {
