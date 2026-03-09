@@ -38,6 +38,19 @@ export default function App(): JSX.Element {
 
   useLayoutEffect(() => {
     applyTheme(theme);
+    
+    // Sync theme-color meta tag for mobile status bars
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]:not([media])');
+    const targetColor = theme === 'dark' ? '#0a0a0a' : '#f2f5fa';
+    
+    if (themeColorMeta) {
+      themeColorMeta.setAttribute('content', targetColor);
+    } else {
+      const meta = document.createElement('meta');
+      meta.name = 'theme-color';
+      meta.content = targetColor;
+      document.head.appendChild(meta);
+    }
   }, [theme]);
 
   useEffect(() => {
