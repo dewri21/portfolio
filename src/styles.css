@@ -327,7 +327,7 @@ html.transition-active {
   width: min(1140px, calc(100% - 2rem));
   margin: 0.85rem auto 0;
   position: fixed;
-  top: 0;
+  top: env(safe-area-inset-top, 0px);
   left: 0;
   right: 0;
   z-index: 100; /* Extremely high to clear all page content and buttons */
@@ -535,7 +535,7 @@ html.transition-active {
 
 main {
   width: min(1140px, calc(100% - 2rem));
-  margin: 7.5rem auto 4rem; /* Compensate for fixed header removal from document flow */
+  margin: calc(7.5rem + env(safe-area-inset-top, 0px)) auto calc(4rem + env(safe-area-inset-bottom, 0px)); /* Compensate for fixed header removal from document flow */
   display: grid;
   gap: 1.7rem;
 }
@@ -548,11 +548,11 @@ main {
 }
 
 .hero {
-  scroll-margin-top: 7.5rem; /* Match main margin-top for spacious hero positioning */
+  scroll-margin-top: calc(7.5rem + env(safe-area-inset-top, 0px)); /* Match main margin-top for spacious hero positioning */
 }
 
 .content-section {
-  scroll-margin-top: 7.2rem;
+  scroll-margin-top: calc(7.2rem + env(safe-area-inset-top, 0px));
 }
 
 .hero h1 {
