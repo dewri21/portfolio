@@ -55,7 +55,7 @@ export default function App(): JSX.Element {
     return () => desktopQuery.removeEventListener('change', onDesktop);
   }, []);
 
-  // Close mobile menu on outside click
+  // Close mobile menu on outside click or scroll
   useEffect(() => {
     if (!mobileMenuOpen) return;
 
@@ -65,8 +65,17 @@ export default function App(): JSX.Element {
       }
     };
 
+    const onScroll = () => {
+      setMobileMenuOpen(false);
+    };
+
     document.addEventListener('click', onClickOutside, true);
-    return () => document.removeEventListener('click', onClickOutside, true);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    
+    return () => {
+      document.removeEventListener('click', onClickOutside, true);
+      window.removeEventListener('scroll', onScroll);
+    };
   }, [mobileMenuOpen]);
 
   // Use IntersectionObserver to detect strictly the "back to top" threshold
