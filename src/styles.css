@@ -201,7 +201,7 @@ html.transition-active .contact-card,
 html.transition-active .timeline-content,
 html.transition-active .filter-insights,
 html.transition-active .focus-list li {
-  background: var(--bg) !important;
+  background: color-mix(in oklab, var(--glass) 80%, transparent 20%) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   opacity: 1 !important;
@@ -218,7 +218,6 @@ html.transition-active .top-bar {
 html.transition-active .back-to-top {
   box-shadow: none !important;
   transform: none !important;
-  opacity: 0.5 !important;
   will-change: auto !important;
 }
 
@@ -227,14 +226,12 @@ html.transition-active .back-to-top {
   By using a very rapid staggered fade, we prevent the muddy middle-state 
   blending of light and dark states, while ensuring elements don't disappear.
 */
-::view-transition-old(top-bar),
-::view-transition-old(back-to-top) {
+::view-transition-old(top-bar) {
   animation: fade-out 0.1s ease-out both;
   mix-blend-mode: normal !important;
 }
 
-::view-transition-new(top-bar),
-::view-transition-new(back-to-top) {
+::view-transition-new(top-bar) {
   animation: fade-in 0.1s 0.1s ease-in both;
   mix-blend-mode: normal !important;
 }
@@ -946,7 +943,6 @@ main {
   transform: translateY(1rem) translateZ(0);
   pointer-events: none;
   transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  view-transition-name: back-to-top;
 }
 
 .back-to-top.visible {
