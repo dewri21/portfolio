@@ -11,9 +11,9 @@
   --glass: rgba(255, 255, 255, 0.08);
   --glass-strong: rgba(255, 255, 255, 0.15);
   --glass-border: rgba(255, 255, 255, 0.45);
-  --glass-shadow: 0 4px 12px rgba(15, 25, 42, 0.08);
-  --panel-shadow: 0 4px 12px rgba(15, 25, 42, 0.06);
-  --glass-highlight: inset 0 1px 1px rgba(255, 255, 255, 0.9);
+  --glass-highlight: inset 0 1px 1px rgba(255, 255, 255, 0.9), inset 1px 0 1px rgba(255, 255, 255, 0.4), inset -1px -1px 2px rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 30px 60px rgba(15, 25, 42, 0.12), 0 10px 20px rgba(15, 25, 42, 0.06);
+  --panel-shadow: 0 16px 32px rgba(15, 25, 42, 0.08);
   --focus-ring: 0 0 0 2px color-mix(in oklab, var(--accent) 58%, transparent 42%);
 }
 
@@ -28,9 +28,9 @@
   --glass: rgba(12, 12, 16, 0.25);
   --glass-strong: rgba(20, 20, 26, 0.35);
   --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-highlight: inset 0 1px 1px rgba(255, 255, 255, 0.4);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  --panel-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  --glass-highlight: inset 0 1px 1px rgba(255, 255, 255, 0.15), inset 1px 0 1px rgba(255, 255, 255, 0.05), inset -1px -1px 2px rgba(0, 0, 0, 0.5);
+  --glass-shadow: 0 35px 70px rgba(0, 0, 0, 0.7), 0 15px 25px rgba(0, 0, 0, 0.4);
+  --panel-shadow: 0 18px 36px rgba(0, 0, 0, 0.5);
   --focus-ring: 0 0 0 2px color-mix(in oklab, var(--accent) 52%, transparent 48%);
 }
 
@@ -41,10 +41,6 @@
 
 html {
   scroll-behavior: smooth;
-  background-color: var(--bg-start);
-  background-image: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%);
-  background-attachment: fixed;
-  background-size: cover;
 }
 
 body {
@@ -52,18 +48,30 @@ body {
   min-height: 100vh;
   font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
   color: var(--ink);
-  background: transparent; /* Rely on html background */
+  background-color: #ffffff;
 }
 
-/* Root background is handled by html element */
-
-:root[data-theme='dark'] html {
-  background-color: var(--bg-start);
-  background-image: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%);
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(to right, rgba(255, 255, 255, 0.18) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.18) 1px, transparent 1px);
+  background-size: 30px 30px;
+  opacity: 0.25;
+  z-index: -2;
 }
 
 :root[data-theme='dark'] body {
-  background: transparent;
+  background-color: #000000;
+}
+
+:root[data-theme='dark'] body::before {
+  background:
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
 }
 
 a {
@@ -73,6 +81,107 @@ a {
 .app-shell {
   position: relative;
   overflow-x: clip;
+  isolation: isolate;
+}
+
+/* Performance: Fixed background layer avoids mobile repaint-on-scroll trap */
+.app-shell::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  pointer-events: none;
+  background-image: 
+    radial-gradient(circle at 15% 10%, rgba(255, 177, 153, 0.05) 0%, transparent 45%),
+    radial-gradient(circle at 85% 15%, rgba(255, 106, 136, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 50% 120%, rgba(246, 211, 101, 0.04) 0%, transparent 55%),
+    linear-gradient(135deg, #ffffff 0%, #fcfcfc 100%);
+}
+
+:root[data-theme='dark'] .app-shell::after {
+  background-image: 
+    radial-gradient(circle at 10% 0%, rgba(255, 0, 85, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 90% 10%, rgba(255, 75, 31, 0.03) 0%, transparent 45%),
+    radial-gradient(circle at 50% 100%, rgba(138, 35, 135, 0.06) 0%, transparent 55%),
+    linear-gradient(135deg, #000000 0%, #020202 50%, #000000 100%);
+}
+
+.kinetic-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.65;
+}
+
+:root[data-theme='dark'] .kinetic-bg {
+  opacity: 0.95;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+}
+
+
+.orb-a {
+  width: clamp(300px, 45vw, 600px);
+  height: clamp(300px, 45vw, 600px);
+  background: radial-gradient(circle, rgba(255, 177, 153, 0.08), transparent 70%);
+  top: -100px;
+  left: -50px;
+  animation: floatOrbA 9s ease-in-out infinite;
+  transform: translate3d(0, 0, 0);
+}
+
+.is-scrolling .orb,
+html.transition-active .orb {
+  animation-play-state: paused !important;
+}
+
+:root[data-theme='dark'] .orb-a {
+  background: radial-gradient(circle, rgba(255, 75, 31, 0.1), transparent 70%);
+}
+
+.orb-b {
+  width: clamp(250px, 40vw, 550px);
+  height: clamp(250px, 40vw, 550px);
+  background: radial-gradient(circle, rgba(255, 106, 136, 0.06), transparent 70%);
+  right: -80px;
+  top: 30%;
+  animation: floatOrbB 11s ease-in-out infinite;
+}
+
+:root[data-theme='dark'] .orb-b {
+  background: radial-gradient(circle, rgba(255, 0, 85, 0.08), transparent 70%);
+}
+
+.orb-c {
+  width: clamp(350px, 50vw, 750px);
+  height: clamp(350px, 50vw, 750px);
+  background: radial-gradient(circle, rgba(246, 211, 101, 0.05), transparent 70%);
+  left: 20%;
+  bottom: -150px;
+  animation: floatOrbC 13s ease-in-out infinite;
+}
+
+:root[data-theme='dark'] .orb-c {
+  background: radial-gradient(circle, rgba(138, 35, 135, 0.07), transparent 70%);
+}
+
+@keyframes floatOrbA {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(24px, -20px, 0) scale(1.08); }
+}
+
+@keyframes floatOrbB {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-18px, 18px, 0) scale(0.95); }
+}
+
+@keyframes floatOrbC {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(14px, 16px, 0) rotate(8deg); }
 }
 
 
@@ -98,12 +207,13 @@ a {
 */
 .top-bar {
   overflow: hidden;
-  border-radius: 20px;
+  border-radius: 24px;
   border: 1px solid var(--glass-border);
-  background: color-mix(in oklab, var(--glass) 88%, var(--bg) 12%);
-  backdrop-filter: blur(6px) saturate(120%);
-  -webkit-backdrop-filter: blur(6px) saturate(120%);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08), var(--glass-highlight);
+  background: color-mix(in oklab, var(--glass) 85%, var(--bg) 15%);
+  backdrop-filter: blur(10px) saturate(130%);
+  -webkit-backdrop-filter: blur(10px) saturate(130%);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), var(--glass-highlight);
+  view-transition-name: top-bar;
 }
 
 /* Core View Transition API properties */
@@ -118,6 +228,8 @@ html::view-transition-new(root) {
 }
 
 ::view-transition-group(root),
+::view-transition-group(top-bar),
+::view-transition-group(back-to-top),
 ::view-transition-image-pair(root),
 ::view-transition-old(root),
 ::view-transition-new(root) {
@@ -128,6 +240,84 @@ html::view-transition-new(root) {
 ::view-transition-new(root) {
   animation-duration: 0.6s;
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 
+  Senior Optimization: THE "FLATTENER"
+  During the 0.6s transition, we temporarily strip all GPU layer promotion 
+  and complexity from the EVERYTHING inside the viewport.
+  This forces the browser to paint a flat 2D surface for the ripple snapshot, 
+  which is orders of magnitude faster than compositing 50+ individual layers.
+*/
+html.transition-active *,
+html.transition-active *::before,
+html.transition-active *::after {
+  animation-play-state: paused !important;
+  will-change: auto !important;
+  transition: none !important;
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
+}
+
+/* 
+  Force cards to be solid and simple during the snapshot.
+  No blurs, no nested filters, just solid thematic background.
+*/
+html.transition-active .metric-card,
+html.transition-active .skill-card,
+html.transition-active .experience-card,
+html.transition-active .project-card,
+html.transition-active .education-card,
+html.transition-active .contact-card,
+html.transition-active .timeline-content,
+html.transition-active .filter-insights,
+html.transition-active .focus-list li {
+  background: var(--bg) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  opacity: 1 !important;
+  transform: none !important; /* Flatten 3D transforms */
+}
+
+/* Header gets its own isolated transition to keep it smooth and glassy */
+html.transition-active .top-bar {
+  opacity: 1 !important;
+  border-color: var(--glass-border) !important;
+}
+
+/* Ensure the floating button doesn't drag down performance during the root ripple */
+html.transition-active .back-to-top {
+  box-shadow: none !important;
+  transform: none !important;
+  opacity: 0.5 !important;
+  will-change: auto !important;
+}
+
+/* 
+  FIX: Eliminate the "grayish" artifact during header and button transitions.
+  By using a very rapid staggered fade, we prevent the muddy middle-state 
+  blending of light and dark states, while ensuring elements don't disappear.
+*/
+::view-transition-old(top-bar),
+::view-transition-old(back-to-top) {
+  animation: fade-out 0.1s ease-out both;
+  mix-blend-mode: normal !important;
+}
+
+::view-transition-new(top-bar),
+::view-transition-new(back-to-top) {
+  animation: fade-in 0.1s 0.1s ease-in both;
+  mix-blend-mode: normal !important;
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* Ensure global snapshots are captured cleanly without clipped overflow */
@@ -166,7 +356,7 @@ html.transition-active {
 }
 
 :root[data-theme='dark'] .top-bar {
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 1), var(--glass-highlight);
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 0, 0, 0.5), var(--glass-highlight);
 }
 
 .top-bar::before,
@@ -194,12 +384,15 @@ html.transition-active {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 100;
+  z-index: 100; /* Extremely high to clear all page content and buttons */
+  transform: translateZ(0); /* Hardware acceleration for glass paint */
+  will-change: transform, max-height;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 0 0.85rem;
   padding: 1.1rem 0.95rem;
+  /* Optimized: Removed background/border transition as they are handled by View Transitions */
   transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -527,9 +720,10 @@ main {
 .experience-card:hover,
 .education-card:hover,
 .contact-card:hover {
+  will-change: transform;
   transform: translateY(-4px) scale(1.01);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
-  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), inset 0 2px 5px rgba(255, 255, 255, 0.6);
+  border-color: rgba(255, 255, 255, 0.6);
   background: var(--glass);
   /* Interaction transitions only */
   transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
@@ -819,15 +1013,15 @@ main {
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transform: translateY(1rem);
+  transform: translateY(1rem) translateZ(0);
   pointer-events: none;
   transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  view-transition-name: none;
+  view-transition-name: back-to-top;
 }
 
 .back-to-top.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) translateZ(0);
   pointer-events: auto;
 }
 
