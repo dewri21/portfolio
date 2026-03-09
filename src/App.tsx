@@ -37,6 +37,11 @@ export default function App(): JSX.Element {
 
   useLayoutEffect(() => {
     applyTheme(theme);
+    // Update theme-color meta tag for mobile safe zones
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute('content', theme === 'light' ? '#f2f5fa' : '#0a0a0a');
+    }
   }, [theme]);
 
   useEffect(() => {

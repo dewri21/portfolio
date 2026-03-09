@@ -41,6 +41,7 @@
 
 html {
   scroll-behavior: smooth;
+  background-color: var(--bg-start);
 }
 
 body {
@@ -48,7 +49,7 @@ body {
   min-height: 100vh;
   font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
   color: var(--ink);
-  background-color: #ffffff;
+  background-color: var(--bg-start);
 }
 
 body::before {
